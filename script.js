@@ -152,7 +152,7 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// Event Listeners
+// Category & Search Filters
 document.querySelectorAll('.cat-pill').forEach(btn => {
   btn.addEventListener('click', (e) => {
     document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
@@ -167,7 +167,7 @@ document.getElementById('sortSelect').addEventListener('change', renderProducts)
 document.getElementById('minPrice').addEventListener('input', renderProducts);
 document.getElementById('maxPrice').addEventListener('input', renderProducts);
 
-// Cart Open/Close
+// Cart Drawer Controls
 document.getElementById('cartBtn').addEventListener('click', () => {
   cartDrawer.classList.add('open');
   cartOverlay.classList.add('open');
@@ -178,7 +178,12 @@ document.getElementById('closeCartBtn').addEventListener('click', () => {
   cartOverlay.classList.remove('open');
 });
 
-// Promo Code
+cartOverlay.addEventListener('click', () => {
+  cartDrawer.classList.remove('open');
+  cartOverlay.classList.remove('open');
+});
+
+// Promo Code System
 document.getElementById('applyPromoBtn').addEventListener('click', () => {
   const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
   if (code === 'AURA10') {
@@ -211,6 +216,56 @@ document.getElementById('checkoutForm').addEventListener('submit', (e) => {
   cartOverlay.classList.remove('open');
 });
 
-// Initial Setup
+// Auth Modal Management
+const authModal = document.getElementById('authModal');
+const userAuthBtn = document.getElementById('userAuthBtn');
+const closeAuthBtn = document.getElementById('closeAuthBtn');
+const authForm = document.getElementById('authForm');
+const authTitle = document.getElementById('authTitle');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const authToggleBtn = document.getElementById('authToggleBtn');
+const authToggleText = document.getElementById('authToggleText');
+
+let isSignUp = false;
+
+// Open Sign In Modal
+userAuthBtn.addEventListener('click', () => {
+  authModal.classList.add('open');
+});
+
+// Close Sign In Modal
+closeAuthBtn.addEventListener('click', () => {
+  authModal.classList.remove('open');
+});
+
+// Toggle Sign In vs Sign Up
+authToggleBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  isSignUp = !isSignUp;
+  if (isSignUp) {
+    authTitle.textContent = "Create an Account";
+    authSubmitBtn.textContent = "Sign Up";
+    authToggleText.textContent = "Already have an account?";
+    authToggleBtn.textContent = "Sign In";
+  } else {
+    authTitle.textContent = "Sign In to AURA";
+    authSubmitBtn.textContent = "Sign In";
+    authToggleText.textContent = "Don't have an account?";
+    authToggleBtn.textContent = "Sign Up";
+  }
+});
+
+// Submit Auth Form
+authForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value;
+  if (!email) return showToast("Please enter an email");
+  
+  document.getElementById('authStatusText').textContent = email.split('@')[0];
+  authModal.classList.remove('open');
+  showToast(isSignUp ? "Account created!" : "Signed in successfully!");
+});
+
+// Initialize Application
 renderProducts();
 saveAndUpdate();
